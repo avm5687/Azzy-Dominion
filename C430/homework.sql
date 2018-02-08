@@ -48,8 +48,7 @@ create table deanList(
 	studentnum varchar2(255) not null,
 	semester varchar2(255) not null,
 	primary key(studentnum, semester),
-	foreign key(studentnum) references Taking,
-	foreign key(semester) references Taking
+	foreign key(studentnum) references Taking
 );
 
 alter table Student
