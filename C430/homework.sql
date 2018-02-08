@@ -43,3 +43,15 @@ create table Taking(
 	foreign key(studentnum) references Student,
 	foreign key(schedulenum, semester) references Class
 );
+
+create table deanList(
+	studentnum varchar2(255) not null,
+	semester varchar2(255) not null,
+	primary key(studentnum, semester),
+	foreign key(studentnum, semester) references Taking
+);
+
+alter table Student
+	add address varchar2(255);
+
+delete from Student;
