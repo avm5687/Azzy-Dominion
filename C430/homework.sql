@@ -39,7 +39,7 @@ create table Taking(
 	schedulenum int not null,
 	semester varchar2(255) not null,
 	grade varchar2(255) not null,
-	primary key(studentnum),
+	primary key(studentnum, semester),
 	foreign key(studentnum) references Student,
 	foreign key(schedulenum, semester) references Class
 );
@@ -48,7 +48,7 @@ create table deanList(
 	studentnum varchar2(255) not null,
 	semester varchar2(255) not null,
 	primary key(studentnum, semester),
-	foreign key(studentnum) references Taking
+	foreign key(studentnum, semester) references Taking
 );
 
 alter table Student
