@@ -39,7 +39,7 @@ create table Taking(
 	schedulenum int not null,
 	semester varchar2(255) not null,
 	grade varchar2(255) not null,
-	primary key(studentnum, schedulenum),
+	primary key(studentnum),
 	foreign key(studentnum) references Student,
 	foreign key(schedulenum, semester) references Class
 );
