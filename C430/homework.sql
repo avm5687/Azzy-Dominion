@@ -41,5 +41,5 @@ create table Taking(
 	grade varchar2(255) not null,
 	primary key(studentnum, schedulenum),
 	foreign key(studentnum) references Student,
-	foreign key(schedulenum, semester) refrences Class
+	foreign key(schedulenum, semester) references Class
 );
