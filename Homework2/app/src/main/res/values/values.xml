@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="intents">
+        <item>Binary Search Tree</item>
+        <item>Linked Listed</item>
+    </string-array>
+</resources>
