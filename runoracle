@@ -1,0 +1,3 @@
+#! /bin/csh -f
+setenv ORACLE_HOME /usr/lib/oracle/12.1/client64
+/usr/lib/oracle/12.1/client64/bin/sqlplus avm5687@PDBCLDB
