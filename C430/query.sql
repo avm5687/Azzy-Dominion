@@ -19,7 +19,7 @@ where schedulenum in
 select distinct name, standing
 from Student natural join Taking
 where not exists
-	(select schedulenum
+	(select name
 		from Class
 		where  department='CMPSC' and num=430);
 
