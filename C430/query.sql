@@ -64,7 +64,7 @@ with allCredits as
 	where semester='Spring 2018'
 	group by studentnum
 )
-select name, count(classCount)
+select name, classCount
 from student, allCredits
 where student.studentnum = allCredits.studentnum and classCount >=
 (select max(classCount) from allCredits)
