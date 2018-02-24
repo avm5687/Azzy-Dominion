@@ -2,6 +2,7 @@ select name
 from Student, Taking, Class
 where Taking.semester='Spring 2018' and Taking.studentnum=Student.studentnum and department='CMPSC' and num=430;
 
+select name
 from Student
 where studentnum in
 	select studentnum
