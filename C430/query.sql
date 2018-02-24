@@ -49,5 +49,8 @@ from Student
 where gpa > 3.0;
 
 select distinct schedulenum, semester, avg(grade)
-from Class, Taking
-where Class.department='CMPSC' and Class.num='430';
+from Taking
+where schedulenum=
+(select schedulenum
+from Class
+where  department='CMPSC' and num=430);
