@@ -27,7 +27,7 @@ create table Teaches(
 );
 
 create table Student(
-	studentnum varchar2(255) not null,
+	studentnum int not null,
 	name varchar2(255) not null,
 	standing varchar2(255) not null,
 	gpa real not null,
@@ -35,7 +35,7 @@ create table Student(
 );
 
 create table Taking(
-	studentnum varchar2(255) not null,
+	studentnum int not null,
 	schedulenum int not null,
 	semester varchar2(255) not null,
 	grade real not null,
