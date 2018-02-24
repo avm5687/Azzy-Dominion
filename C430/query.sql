@@ -37,3 +37,11 @@ where office like '%Olmstead%';
 
 select avg(gpa)
 from Student;
+
+select distinct name, standing
+from Student
+where max(gpa);
+
+select count(gpa)
+from Student
+where gpa > 3.0;
