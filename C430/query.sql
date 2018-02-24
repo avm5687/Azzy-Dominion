@@ -41,7 +41,7 @@ from Student;
 select distinct name, standing
 from Student
 where gpa
-(select gpa >= max(gpa)
+(select max(gpa) as "Highest GPA"
 from Student);
 
 select count(gpa)
