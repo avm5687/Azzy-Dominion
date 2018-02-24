@@ -50,8 +50,8 @@ where gpa > 3.0;
 
 select distinct schedulenum, semester, avg(grade)
 from Taking
-where schedulenum=
+where schedulenum in
 (select schedulenum
 from Class
 where  department='CMPSC' and num=430)
-group by schedulenum, semester, avg(grade);
+group by schedulenum, semester;
