@@ -67,5 +67,4 @@ with allCredits as
 select name, classCount
 from student, allCredits
 where student.studentnum = allCredits.studentnum and classCount >=
-(select max(classCount) from allCredits)
-group by name;
+(select max(classCount) from allCredits);
