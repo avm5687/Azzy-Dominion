@@ -2,8 +2,7 @@ select name
 from Student, Taking, Class
 where Taking.semester='Spring 2018' and Taking.studentnum=Student.studentnum and department='CMPSC' and num=430;
 
-select name
-from Student
+/*from Student
 where studentnum in
 	(select studentnum
 		from Taking, Class
@@ -21,5 +20,5 @@ from Student natural join Taking
 where not exists
 	(select schedulenum
 		from Class
-		where  department='CMPSC' and num=430);
+		where  department='CMPSC' and num=430);*/
 
