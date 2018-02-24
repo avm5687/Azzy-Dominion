@@ -40,7 +40,7 @@ from Student;
 
 select distinct name, standing
 from Student
-where gpa
+where gpa >=
 (select MAX(gpa) AS highest_gpa
 from Student);
 
