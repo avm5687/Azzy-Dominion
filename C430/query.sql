@@ -53,4 +53,5 @@ from Taking
 where schedulenum=
 (select schedulenum
 from Class
-where  department='CMPSC' and num=430);
+where  department='CMPSC' and num=430)
+group by schedulenum, semester;
