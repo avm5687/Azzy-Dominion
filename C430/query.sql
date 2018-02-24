@@ -33,4 +33,4 @@ order by name asc;
 
 select distinct name, department
 from Instructor
-where office="Olmstead";
+where office='Olmstead';
