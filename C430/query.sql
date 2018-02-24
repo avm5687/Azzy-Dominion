@@ -16,7 +16,7 @@ where schedulenum in
 	from Teaches
 	where name='Linda Null' or name='Jeremy Blum');
 
-select name, standing
+select distinct name, standing
 from Student natural join Taking
 where exists
 	(select schedulenum
