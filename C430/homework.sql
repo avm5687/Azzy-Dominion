@@ -21,7 +21,7 @@ create table Teaches(
 	name varchar2(255) not null,
 	schedulenum int not null,
 	semester varchar2(255) not null,
-	primary key(schedulenum, semester),
+	primary key(name, schedulenum, semester),
 	foreign key(name) references Instructor,
 	foreign key(schedulenum, semester) references Class
 );
@@ -38,20 +38,8 @@ create table Taking(
 	studentnum varchar2(255) not null,
 	schedulenum int not null,
 	semester varchar2(255) not null,
-	grade varchar2(255) not null,
-	primary key(studentnum, semester),
+	grade real not null,
+	primary key(studentnum, schedulenum, semester),
 	foreign key(studentnum) references Student,
 	foreign key(schedulenum, semester) references Class
 );
-
-create table deanList(
-	studentnum varchar2(255) not null,
-	semester varchar2(255) not null,
-	primary key(studentnum, semester),
-	foreign key(studentnum, semester) references Taking
-);
-
-alter table Student
-	add address varchar2(255);
-
-delete from Student;
