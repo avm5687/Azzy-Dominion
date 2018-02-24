@@ -47,3 +47,7 @@ from Student);
 select count(gpa)
 from Student
 where gpa > 3.0;
+
+select distinct schedulenum, semster, avg(grade)
+from Class, Taking
+where Class.department="CMPSC" and Class.num='430';
