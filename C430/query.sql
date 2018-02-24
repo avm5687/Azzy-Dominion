@@ -30,3 +30,7 @@ where standing=
 	from Student
 	where name='Alice')
 order by name asc;
+
+select distinct name, department
+from Instructor
+where office="Olmstead";
