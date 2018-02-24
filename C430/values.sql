@@ -1,0 +1,204 @@
+INSERT INTO class VALUES(1234, 'CMPSC', 'Spring 2018', 430, 'T, R', '1:35-2:50', 'EAB 103', 'open');
+INSERT INTO class VALUES(1235, 'CMPSC', 'Spring 2018', 463, 'T, R', '1:35-2:50', 'Olmstead E240', 'open');
+INSERT INTO class VALUES(1236, 'CMPSC', 'Spring 2018', 460, 'W', '6:00-9:00', 'Olmstead E218', 'open');
+INSERT INTO class VALUES(1237, 'CMPSC', 'Spring 2018', 488, 'M, W', '11:15-12:30', 'EAB 103', 'open');
+INSERT INTO class VALUES(1234, 'CMPSC', 'Spring 2017', 430, 'T, R', '1:35-2:50', 'EAB 103', 'open');
+INSERT INTO class VALUES(1235, 'CMPSC', 'Spring 2017', 463, 'T, R', '1:35-2:50', 'Olmstead E240', 'open');
+INSERT INTO class VALUES(1236, 'CMPSC', 'Spring 2017', 460, 'W', '6:00-9:00', 'Olmstead E218', 'open');
+INSERT INTO class VALUES(1237, 'CMPSC', 'Spring 2017', 488, 'M, W', '11:15-12:30', 'EAB 103', 'open');
+INSERT INTO class VALUES(1238, 'MATH', 'Spring 2017', 455, 'M, W', '9:00-10:15', 'EAB 103', 'open');
+INSERT INTO class VALUES(1224, 'CMPSC', 'Fall 2017', 470, 'T, R', '1:35-2:50', 'EAB 103', 'open');
+INSERT INTO class VALUES(1225, 'CMPSC', 'Fall 2017', 472, 'T, R', '1:35-2:50', 'Olmstead E240', 'open');
+INSERT INTO class VALUES(1226, 'MATH', 'Fall 2017', 475, 'W', '6:00-9:00', 'Olmstead E218', 'open');
+INSERT INTO class VALUES(1227, 'CMPSC', 'Fall 2017', 487, 'M, W', '11:15-12:30', 'EAB 103', 'open');
+INSERT INTO class VALUES(1228, 'CMPSC', 'Fall 2017', 497, 'M, W', '12:45-2:00', 'EAB 103', 'open');
+INSERT INTO class VALUES(1229, 'CMPSC', 'Fall 2017', 444, 'M, W', '2:15-3:30', 'EAB 103', 'open');
+INSERT INTO instructor VALUES('Jeremy Blum', 'CMPSC', 'Olmstead W255');
+INSERT INTO instructor VALUES('Sukmoon Chang', 'CMPSC', 'Olmstead W255');
+INSERT INTO instructor VALUES('Hyuntae Na', 'CMPSC', 'Olmstead W255');
+INSERT INTO instructor VALUES('Linda Null', 'CMPSC', 'Olmstead W255');
+INSERT INTO instructor VALUES('Eugene Bowman', 'MATH', 'Olmstead W255');
+INSERT INTO instructor VALUES('Justin Keller', 'MATH', 'Olmstead W255');
+INSERT INTO teaches VALUES('Jeremy Blum', 1234, 'Spring 2018');
+INSERT INTO teaches VALUES('Jeremy Blum', 1235, 'Spring 2018');
+INSERT INTO teaches VALUES('Jeremy Blum', 1229, 'Fall 2017');
+INSERT INTO teaches VALUES('Jeremy Blum', 1228, 'Fall 2017');
+INSERT INTO teaches VALUES('Sukmoon Chang', 1236, 'Spring 2018');
+INSERT INTO teaches VALUES('Hyuntae Na', 1237, 'Spring 2018');
+INSERT INTO teaches VALUES('Hyuntae Na', 1224, 'Fall 2017');
+INSERT INTO teaches VALUES('Linda Null', 1225, 'Fall 2017');
+INSERT INTO teaches VALUES('Eugene Bowman', 1226, 'Fall 2017');
+INSERT INTO teaches VALUES('Justin Keller', 1238, 'Spring 2017');
+INSERT INTO student VALUES(6265450, 'Joe', 'Senior', 3.0);
+INSERT INTO student VALUES(6265451, 'Shahara', 'Junior', 3.0);
+INSERT INTO student VALUES(6265452, 'Syn', 'First Year', 3.5);
+INSERT INTO student VALUES(6265453, 'Cloud', 'Sophomore', 4.0);
+INSERT INTO student VALUES(6265454, 'Rex', 'Senior', 3.0);
+INSERT INTO student VALUES(6265455, 'Alice', 'Senior', 3.3);
+INSERT INTO student VALUES(6265440, 'Nia', 'Senior', 3.0);
+INSERT INTO student VALUES(6265441, 'John', 'Junior', 3.0);
+INSERT INTO student VALUES(6265442, 'Mason', 'First Year', 3.5);
+INSERT INTO student VALUES(6265443, 'Diablo', 'Sophomore', 4.0);
+INSERT INTO student VALUES(6265444, 'Lisa', 'Senior', 3.0);
+INSERT INTO student VALUES(6265445, 'James', 'Senior', 3.0);
+INSERT INTO student VALUES(6265446, 'Nykyrian', 'Senior', 3.0);
+INSERT INTO student VALUES(6265447, 'Bob', 'Senior', 3.0);
+INSERT INTO student VALUES(6265448, 'Sasuke', 'First Year', 2.0);
+INSERT INTO student VALUES(6265449, 'Naruto', 'Junior', 2.5);
+INSERT INTO student VALUES(6265430, 'Bruce', 'Senior', 2.7);
+INSERT INTO student VALUES(6265431, 'Selena', 'Sophomore', 2.0);
+INSERT INTO taking VALUES(6265448, 1238, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265449, 1238, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265430, 1238, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265431, 1238, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265445, 1238, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265446, 1238, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265447, 1238, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265445, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265446, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265447, 1224, 'Fall 2017', 4.0);
+-- Joe's Spring 2018 classes, 430, 463, 460, 488
+INSERT INTO taking VALUES(6265450, 1234, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265450, 1235, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265450, 1236, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265450, 1237, 'Spring 2018', 4.0);
+-- Shahara's Spring 2018 classes, 430, 463, 460, 488
+INSERT INTO taking VALUES(6265451, 1234, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265451, 1235, 'Spring 2018', 3.0);
+INSERT INTO taking VALUES(6265451, 1236, 'Spring 2018', 3.5);
+INSERT INTO taking VALUES(6265451, 1237, 'Spring 2018', 3.2);
+-- Syn's Spring 2018 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265452, 1234, 'Spring 2018', 2.9);
+INSERT INTO taking VALUES(6265452, 1235, 'Spring 2018', 3.0);
+INSERT INTO taking VALUES(6265452, 1236, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265452, 1237, 'Spring 2018', 2.0);
+-- Cloud's Spring 2018 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265453, 1234, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265453, 1235, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265453, 1236, 'Spring 2018', 4.0);
+INSERT INTO taking VALUES(6265453, 1237, 'Spring 2018', 4.0);
+-- Rex's Spring 2018 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265454, 1234, 'Spring 2018', 2.5);
+INSERT INTO taking VALUES(6265454, 1235, 'Spring 2018', 2.5);
+INSERT INTO taking VALUES(6265454, 1236, 'Spring 2018', 2.5);
+INSERT INTO taking VALUES(6265454, 1237, 'Spring 2018', 2.2);
+-- Joe's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265450, 1234, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1235, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1236, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1237, 'Spring 2017', 4.0);
+-- Shahara's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265451, 1234, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265451, 1235, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265451, 1236, 'Spring 2017', 3.5);
+INSERT INTO taking VALUES(6265451, 1237, 'Spring 2017', 2.5);
+-- Syn's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265452, 1234, 'Spring 2017', 2.2);
+INSERT INTO taking VALUES(6265452, 1235, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265452, 1236, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265452, 1237, 'Spring 2017', 2.0);
+-- Cloud's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265453, 1234, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1235, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1236, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1237, 'Spring 2017', 4.0);
+-- Rex's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265454, 1234, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1235, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1236, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1237, 'Spring 2017', 3.0);
+-- Joe's Fall 2017 classes 470, 472, 475, 487, 497, 444
+INSERT INTO taking VALUES(6265450, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1225, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1226, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1227, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1228, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265450, 1229, 'Fall 2017', 4.0);
+-- Shahara's Fall 2017 classes 470, 472, 475, 487, 497, 444
+INSERT INTO taking VALUES(6265451, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265451, 1225, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265451, 1226, 'Fall 2017', 3.5);
+INSERT INTO taking VALUES(6265451, 1227, 'Fall 2017', 2.9);
+INSERT INTO taking VALUES(6265451, 1228, 'Fall 2017', 2.9);
+INSERT INTO taking VALUES(6265451, 1229, 'Fall 2017', 2.9);
+-- Syn's Fall 2017 classes 470, 472, 475, 487, 497, 444
+INSERT INTO taking VALUES(6265452, 1224, 'Fall 2017', 2.6);
+INSERT INTO taking VALUES(6265452, 1225, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265452, 1226, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265452, 1227, 'Fall 2017', 2.0);
+INSERT INTO taking VALUES(6265452, 1228, 'Fall 2017', 2.0);
+INSERT INTO taking VALUES(6265452, 1229, 'Fall 2017', 2.0);
+-- Cloud's Fall 2017 classes 470, 472, 475, 487, 497, 444
+INSERT INTO taking VALUES(6265453, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1225, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1226, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1227, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1228, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265453, 1229, 'Fall 2017', 4.0);
+-- Rex's Fall 2017 classes 470, 472, 475, 487, 497, 444
+INSERT INTO taking VALUES(6265454, 1224, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1225, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1226, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1227, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1228, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265454, 1229, 'Fall 2017', 3.0);
+-- Nia's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265440, 1234, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1235, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1236, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1237, 'Spring 2017', 4.0);
+-- John's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265441, 1234, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265441, 1235, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265441, 1236, 'Spring 2017', 3.5);
+INSERT INTO taking VALUES(6265441, 1237, 'Spring 2017', 2.9);
+-- Mason's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265442, 1234, 'Spring 2017', 2.3);
+INSERT INTO taking VALUES(6265442, 1235, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265442, 1236, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265442, 1237, 'Spring 2017', 2.0);
+-- Diablo's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265443, 1234, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1235, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1236, 'Spring 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1237, 'Spring 2017', 4.0);
+-- Lisa's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265444, 1234, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1235, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1236, 'Spring 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1237, 'Spring 2017', 3.0);
+-- Nia's fall 2017 classes 470, 472, 475, 487, 497, 444
+INSERT INTO taking VALUES(6265440, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1225, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1226, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1227, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1228, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265440, 1229, 'Fall 2017', 4.0);
+-- John's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265441, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265441, 1225, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265441, 1226, 'Fall 2017', 3.5);
+INSERT INTO taking VALUES(6265441, 1227, 'Fall 2017', 2.9);
+INSERT INTO taking VALUES(6265441, 1228, 'Fall 2017', 2.9);
+INSERT INTO taking VALUES(6265441, 1229, 'Fall 2017', 2.9);
+-- Mason's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265442, 1224, 'Fall 2017', 2.5);
+INSERT INTO taking VALUES(6265442, 1225, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265442, 1226, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265442, 1227, 'Fall 2017', 2.0);
+INSERT INTO taking VALUES(6265442, 1228, 'Fall 2017', 2.0);
+INSERT INTO taking VALUES(6265442, 1229, 'Fall 2017', 2.0);
+-- Diablo's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265443, 1224, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1225, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1226, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1227, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1228, 'Fall 2017', 4.0);
+INSERT INTO taking VALUES(6265443, 1229, 'Fall 2017', 4.0);
+-- Lisa's Spring 2017 classes 430, 463, 460, 488
+INSERT INTO taking VALUES(6265444, 1224, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1225, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1226, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1227, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1228, 'Fall 2017', 3.0);
+INSERT INTO taking VALUES(6265444, 1229, 'Fall 2017', 3.0);
