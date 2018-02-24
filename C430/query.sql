@@ -17,11 +17,11 @@ where schedulenum in
 	where name='Linda Null' or name='Jeremy Blum');
 
 select distinct name, standing
-from Student natural join Taking
-where not exists
-	(select name
-		from Class
-		where  department='CMPSC' and num=430);
+from Student, Taking
+where Student.studentnum = Taking.studentnum and not exists
+	(select *
+		from Class, Taking
+		where  department='CMPSC' and num=430 and Student.studentnum = Taking.studentnum and Class.schedulenum = Taking.schedulenum);
 
 select distinct name, standing
 from Student
@@ -68,3 +68,10 @@ select name, classCount
 from student, allCredits
 where student.studentnum = allCredits.studentnum and classCount >=
 (select max(classCount) from allCredits);
+
+select distinct name, standing
+from Student, Taking
+where Student.studentnum = Taking.studentnum and not exists
+	(select *
+		from Class, Taking
+		where  department='CMPSC' and num=430 and Student.studentnum = Taking.studentnum and Class.schedulenum = Taking.schedulenum);
