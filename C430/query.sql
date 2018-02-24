@@ -40,7 +40,7 @@ from Student;
 
 select distinct name, standing
 from Student
-where max(gpa);
+where gpa=max(gpa);
 
 select count(gpa)
 from Student
