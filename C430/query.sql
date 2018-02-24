@@ -18,8 +18,15 @@ where schedulenum in
 
 select distinct name, standing
 from Student natural join Taking
-where name not exists
+where not exists
 	(select name
 		from Class
 		where  department='CMPSC' and num=430);
 
+select distinct name, standing
+from Student
+where standing=
+	(select standing
+	from Student
+	where name='Alice')
+order by asc;
