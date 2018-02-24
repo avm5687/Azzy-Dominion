@@ -1,15 +1,15 @@
-select name
+select distinct name
 from Student, Taking, Class
 where Taking.semester='Spring 2018' and Taking.studentnum=Student.studentnum and department='CMPSC' and num=430;
 
-select name
+select distinct name
 from Student
 where studentnum in
 	(select studentnum
 		from Taking, Class
 		where Taking.semester='Spring 2018' and Taking.studentnum=Student.studentnum and department='CMPSC' and num=430);
 
-select name, standing
+select distinct name, standing
 from Student natural join Taking
 where schedulenum in
 	(select schedulenum
@@ -18,7 +18,7 @@ where schedulenum in
 
 select distinct name, standing
 from Student natural join Taking
-where not exists
+where name not exists
 	(select name
 		from Class
 		where  department='CMPSC' and num=430);
