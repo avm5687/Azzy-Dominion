@@ -18,7 +18,8 @@ where schedulenum in
 
 select name, standing
 from Student natural join Taking
-where not exists
+where exists
 	(select schedulenum
 		from Class
-		where  department='CMPSC' and num=430);
+		where  department!='CMPSC' and num!=430);
+
