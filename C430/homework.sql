@@ -7,8 +7,8 @@ create table Instructor(
 
 create table Class(
 	schedulenum int not null,
-	semester varchar2(255) not null,
 	department varchar2(255) not null,
+	semester varchar2(255) not null,
 	num int not null,
 	days varchar2(255) not null,
 	time varchar2(255) not null,
@@ -30,7 +30,7 @@ create table Student(
 	studentnum int not null,
 	name varchar2(255) not null,
 	standing varchar2(255) not null,
-	gpa real not null,
+	gpa decimal(3,2) not null,
 	primary key(studentnum)
 );
 
@@ -38,7 +38,7 @@ create table Taking(
 	studentnum int not null,
 	schedulenum int not null,
 	semester varchar2(255) not null,
-	grade real not null,
+	grade decimal(2,1) not null,
 	primary key(studentnum, schedulenum, semester),
 	foreign key(studentnum) references Student,
 	foreign key(schedulenum, semester) references Class

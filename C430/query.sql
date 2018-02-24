@@ -23,6 +23,3 @@ where not exists
 		from Class
 		where  department='CMPSC' and num=430);
 
-select standing
-from Student
-where 
