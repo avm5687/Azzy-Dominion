@@ -55,3 +55,16 @@ where schedulenum in
 from Class
 where  department='CMPSC' and num=430)
 group by schedulenum, semester;
+
+
+with allCredits as
+(
+	select studentnum, count(schedulenum) as classCount
+	from Taking
+	where semester='Spring 2018'
+	group by studentnum
+)
+select name, count(classCount)
+from student, allCredits
+where student.studentnum = allCredits.studentnum and schedulenum >=
+(select max(classCount) from allCredits);
