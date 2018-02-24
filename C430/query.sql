@@ -29,4 +29,4 @@ where standing=
 	(select standing
 	from Student
 	where name='Alice')
-order by asc;
+order by name asc;
