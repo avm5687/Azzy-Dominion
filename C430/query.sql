@@ -54,4 +54,4 @@ where schedulenum=
 (select schedulenum
 from Class
 where  department='CMPSC' and num=430)
-group by schedulenum, semester;
+group by schedulenum, semester, avg(grade);
