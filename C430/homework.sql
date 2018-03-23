@@ -11,12 +11,12 @@ create table Class(
 	semester varchar2(255) not null,
 	num int not null,
 	days varchar2(255) not null,
-	time varchar2(255) not null,
+	time int not null,
 	place varchar2(255) not null,
 	enrollment int not null,
 	primary key(schedulenum, semester),
 	unique(semester, days, time, place),
-	check(days = 'MWF' or days = "TuTh" and time > 0 and time < 24));
+	check(days = 'MWF' or days = 'TuTh' and time > 0 and time < 24));
 
 create table Teaches(
 	name varchar2(255) not null,
