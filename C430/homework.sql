@@ -39,7 +39,7 @@ create table Taking(
 	studentnum int not null,
 	schedulenum int not null,
 	semester varchar2(255) not null,
-	grade decimal(2,1) not null,
+	grade decimal(2,1),
 	primary key(studentnum, schedulenum, semester),
 	foreign key(studentnum) references Student
 	on delete cascade,
