@@ -13,8 +13,11 @@ create table Class(
 	days varchar2(255) not null,
 	time varchar2(255) not null,
 	place varchar2(255) not null,
-	enrollment varchar2(255) not null,
-	primary key(schedulenum, semester)
+	enrollment int not null,
+	primary key(schedulenum, semester),
+	unique(semester, days, time, place),
+	check(days = 'MWF' or days = "TuTh" and time > 0 and time < 24)
+
 );
 
 create table Teaches(
@@ -40,6 +43,11 @@ create table Taking(
 	semester varchar2(255) not null,
 	grade decimal(2,1) not null,
 	primary key(studentnum, schedulenum, semester),
-	foreign key(studentnum) references Student,
+	foreign key(studentnum) references Student
+	on delete cascade,
 	foreign key(schedulenum, semester) references Class
+	on delete cascade
 );
+
+
+--#3 create assertion ClassConstraint Check(select count(*) from class) <= select enrollment from class

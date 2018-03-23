@@ -68,10 +68,3 @@ select name, classCount
 from student, allCredits
 where student.studentnum = allCredits.studentnum and classCount >=
 (select max(classCount) from allCredits);
-
-select distinct name, standing
-from Student, Taking
-where Student.studentnum = Taking.studentnum and not exists
-	(select *
-		from Class, Taking
-		where  department='CMPSC' and num=430 and Student.studentnum = Taking.studentnum and Class.schedulenum = Taking.schedulenum);
