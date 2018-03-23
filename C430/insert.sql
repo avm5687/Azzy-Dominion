@@ -10,7 +10,7 @@ INSERT INTO Student VALUES(6265445, 'James', 'Senior', 3.0);
 INSERT INTO Taking
 select studentnum
 from Student
-whereschedulenum IN
+where schedulenum IN
 (select schedulenum
  from Class
  where department = 'CMPSC');
