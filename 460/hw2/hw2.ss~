@@ -1,0 +1,69 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; CMPSC 460-001                        ;;;
+;;; Homework 2                           ;;;
+;;; Your Name                            ;;;
+;;; Your AccessID                        ;;;
+;;;                                      ;;;
+;;; Note:                                ;;;
+;;;   Write whatever you want the grader ;;;
+;;;   to know before grading.            ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(module hw2 (lib "eopl.ss" "eopl")
+
+  (provide
+   s-list->scheme-list
+   scheme-list->s-list
+   s-exp->scheme-exp
+   scheme-exp->s-exp
+   subst
+   scheme-exp->lc-exp
+   lc-exp->scheme-exp
+   free-vars
+   bound-vars
+  )
+
+
+  ;; S-List
+  ;;
+  ;; <s-list> ::= ( {s-exp}* )  <== () | ( <s-exp> . <s-list> )
+  ;;              [[ empty-s-list ]]  |  [[ non-empty-s-list (s-exp s-list) ]]
+  ;; <s-exp>  ::= <symbol> | <s-list>
+  ;;              [[ symbol-s-exp (sym) ]]  |  [[ s-list-s-exp (slist) ]]
+
+  ;; Define the necessary data types and procedures for S-List
+  ;; conforming to both concrete as well as abstract syntax above
+
+  
+
+
+
+
+  ;; Lc-exp
+  ;;
+  ;; Lc-exp ::= Identifier
+  ;;            [[ var-exp (var) ]]
+  ;;        ::= (lambda ( {Identifier}* ) Lc-exp)
+  ;;            [[ lambda-exp (bound-vars body) ]]
+  ;;        ::= ( Lc-exp {Lc-exp}* )
+  ;;            [[ app-exp (rator rands) ]]
+
+  (define identifier? symbol?)
+
+  ;; Write the abstract syntax for Lc-exp whose concrete syntax is give above
+  ;; (See S-List as an example)
+  ;;
+  ;; Then, define the necessary data types and procedures for Lc-exp
+  ;; conforming to both concrete syntax above and your  abstract syntax.
+
+
+
+
+
+
+  
+  
+  
+  ;;;; DO NOT REMOVE THE FOLLOWING PARENTHESIS
+)
