@@ -49,3 +49,8 @@ create table Taking(
 
 
 --#3 create assertion ClassConstraint Check(select count(*) from class) <= select enrollment from class
+--#8 all studenta were delected due to cascade
+--9a NO i can't, I need to use the commit command in the 2nd terminal.
+--9b Yes, because once I execute another query it executes my previous queries.
+--9c Yes, because I properly exited.
+--9d No, because i terminated the program before changes were commited.
