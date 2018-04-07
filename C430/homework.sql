@@ -42,10 +42,40 @@ create table Taking(
 	grade decimal(2,1),
 	primary key(studentnum, schedulenum, semester),
 	foreign key(studentnum) references Student
-	on delete cascade,
 	foreign key(schedulenum, semester) references Class
-	on delete cascade
 );
+
+create or replace trigger StudentDeletion
+before delete on Student
+Referencing old as oldStudent
+for each row (oldStudent)
+Begin
+	delete from Taking
+	where studentnum = :oldStudent.studentnum;
+End;
+/
+
+create table gradeTrack(
+	user varchar2(30) not null,
+	STAMP timestamp,
+	studentnum int not null,
+	department varchar2(255) not null,
+	num int not null,
+	oldGrade decimal(2,1),
+	newGrade decimal(2,1)
+);
+
+create or replace trigger GradeUpdate
+after update of grade on Taking
+Referencing old as oldG new as newG
+for each row when (oldG.grade != newG.grade)
+Begin
+	Insert into gradeTrack VALUES(user, SYSTIMESTAMP, :oldG.studentnum, select department from class where schedulenum = :oldG.schedulenum, select num class where schedulenum = :oldG.schedulenum, :oldG.grade, :newG.grade);
+END;
+/
+
+create or replace trigger NeverLow
+before update 
 
 
 --#3 create assertion ClassConstraint Check(select count(*) from class) <= select enrollment from class
