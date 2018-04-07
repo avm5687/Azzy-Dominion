@@ -11,9 +11,9 @@ update Taking
 				end;
 
 update Taking
-	set grade = 2.0;
+	set grade = 1.0;
 
 update Taking
 	set grade = case
-		when grade >= 3.0 then 1.5
+		when grade >= 2.0 then 1.5
 		end;
