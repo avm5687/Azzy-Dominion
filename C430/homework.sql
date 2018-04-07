@@ -76,14 +76,15 @@ END;
 
 create or replace trigger neverLow
 before update of grade on Taking
-Declare avgGpa decimal(2,1);
-		cursor Fido is select avg(grade) from Taking;
+Declare 
+	avgGpa decimal(2,1);
+	Cursor Fido is select avg(grade) from Taking;
 Begin
 	open Fido;
 	loop fetch Fido into avgGpa;
 	exit when Fido%notfound;
 	if avgGpa < 3.0 then
-		RAISE_APPLICATION_Error(-25, "GPA IS TOO LOW");
+		RAISE_APPLICATION_Error(-25, 'GPA IS TOO LOW');
 	End if;
 	END loop;
 	close Fido;
