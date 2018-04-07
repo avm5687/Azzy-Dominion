@@ -45,7 +45,7 @@ class hw6
 			System.out.println(rset.getInt("studentnum") + " " +rset.getString("name") + " " + rset.getString("standing")+ " " +rset.getDouble("gpa"));
 		}
 		rset.close();
-		stmt.close();
+		pStmt.close();
 		conn.close();
 		System.out.println("Goodbye.");
 	}
