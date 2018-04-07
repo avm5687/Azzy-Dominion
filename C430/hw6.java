@@ -13,8 +13,8 @@ class hw6
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter your login information.");
 		System.out.print("Connecting to the database...");
-		System.out.flush();S
-		ystem.out.println("Connecting...");
+		System.out.flush();
+		System.out.println("Connecting...");
 		OracleDataSource ods = new OracleDataSource();
 		ods.setURL("jdbc:oracle:oci:@pdbcldb");
 		System.out.print("Username: ");
