@@ -68,7 +68,7 @@ create table gradeTrack(
 create or replace trigger GradeUpdate
 after update of grade on Taking
 Referencing old as oldG new as newG
-for each row when (oldG.grade != newG.grade)
+for each row
 Begin
 	Insert into gradeTrack VALUES(user, SYSTIMESTAMP, :oldG.studentnum, select department from class where schedulenum = :oldG.schedulenum, select num from class where schedulenum = :oldG.schedulenum, :oldG.grade, :newG.grade);
 END;
