@@ -28,7 +28,7 @@ class hw6
 
 		System.out.println("connected.");
 		String a = (String) JOptionPane.showInputDialog(null, "Select Option", "Query", JOptionPane.QUESTION_MESSAGE, null, array, array[0]);
-		PreparedStatement pStmt = con.prepareStatement("select * from Student" +"where" + a + "=?");
+		PreparedStatement pStmt = conn.prepareStatement("select * from Student" +"where" + a + "=?");
 		System.out.println("What would you like to search by?");
 		String b = sc.next();
 		if(a.equals(array[0]))
