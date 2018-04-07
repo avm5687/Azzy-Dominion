@@ -83,8 +83,8 @@ Begin
 	loop fetch Fido into avgGpa;
 	exit when Fido%notfound;
 	if avgGpa < 3.0 then
-		RAISE_APPLICATION_Error"-25 GPA IS TOO LOW";
-	End if
+		RAISE_APPLICATION_Error(-25, "GPA IS TOO LOW");
+	End if;
 	END loop;
 	close Fido;
 END;
