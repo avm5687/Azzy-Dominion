@@ -69,6 +69,9 @@
       (expression (number) const-exp)
       (expression (identifier) var-exp)
       (expression
+       ("let" (arbno identifier "=" expression) "in" expression) ;correct? arbno for identifier = expression?
+       let-exp)
+      (expression
         ("zero?" "(" expression ")")
         zero?-exp)
       (expression
@@ -289,6 +292,8 @@
                   (num2 (expval->num val2)))
               (num-val
                 (floor(/ num1 num2))))))
+        
+        (let-exp ())
         
         (mult-exp (exp1 exp2)
           (let ((val1 (value-of exp1 env))
