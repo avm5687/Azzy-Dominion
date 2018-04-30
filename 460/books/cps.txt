@@ -1,0 +1,352 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                                   ;;;; 
+;;;;     Continuation-Passing Style    ;;;; 
+;;;;                                   ;;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+ Summary for call-with-current-continuation
+ 
+ Given an expression: (...  (call/cc r) ...),
+ call/cc
+ - takes a procedure r of one argument
+ - constructs the current continuation k
+ - invokes r passing k, i.e., (r k)
+ - the value of (r k) is the value of (call/cc r)
+
+ - each time k is applied to a value,
+   - it returns the value to the call/cc application
+   - this value becomes the value of the application of call/cc
+
+ > (call/cc       ; <== continuation: (lambda (_) _)
+    (lambda (k)   ; <== when continuation is passed,
+      (* 5 4)))   ; <== it is ignored
+ 20
+
+ > (call/cc         ; <== continuation : (lambda (_) _)
+    (lambda (k)     ; <== when continuation is passed,
+      (* 5 (k 4)))) ; <== value of (call/cc ...) is (k 4) = 4
+ 4
+
+
+ > (let ((x (call/cc (lambda (k) k))))
+     (x (lambda (ignore) "hi")))
+ "hi"
+
+ Let's see why
+ 1. continuation of call/cc : (escaper (lambda (_)
+                                         (let ((x _))
+                                           (x (lambda (ignore) "hi")))))
+ 2. x is locally bound to continuation of call/cc above
+ 3. x is applied to (lambda (ignore) "hi")
+    i.e.,
+          (x (lambda (ignore) "hi")
+       =  ( (lambda (_)                       -|
+              (let ((x _))                     |<== x
+                (x (lambda (ignore) "hi"))))  _|
+            (lambda (ignore) "hi") )
+       =  (let ((x (lambda (ignore) "hi")))
+            (x (lambda (ignore) "hi"))
+       =  ((lambda (ignore) "hi")) (lambda (ignore) "hi")))
+       =  "hi"
+
+
+
+ > (((call/cc (lambda (k) k))
+     (lambda (x) x))
+    "hey!")
+ "hey"
+
+ Let's see why
+ 1. continuation of call/cc : (escaper (lambda (_)
+                                         (( _ (lambda (x) x))
+                                           "hey!")))
+                              => call it K
+ 2. continuation is passed as k, which returns k itself
+          (call/cc (lambda (k) k))
+        = ((lambda (k) k)  K)
+        = K
+ 3. so, the whole expression becomes
+          ((K (lambda (x) x))
+            "hey!" )
+ 4. and
+          (K (lambda (x) x))
+        = ((lambda (x) x) (lambda (x) x))
+        = (lambda (x) x)
+ 5. so again, the whole expression becomes
+          ((K (lambda (x) x)) "hey!")
+        = ((lambda (x) x) "hey!")
+        = "hey!"
+
+
+
+
+
+ Continuation-Passing Style
+ - to convert natural recursion to tail recursion
+
+ ex: Natural recursion
+       (define length
+         (lambda (ls)
+           (cond
+             ((null? ls) 0)
+             (else (add1 (length (cdr ls)))))))
+
+  => Tail recursion
+       (define length
+         (lambda (ls)
+           (call/cc       <== continuation: (esacper (lambda (_) _)) <-- ki
+             (lambda (k) (length-cps ls k))))) 
+
+       (define length-cps
+         (lambda (ls k)
+           (cond
+             ((null? ls) (k 0))
+             (else (length-cps (cdr ls) (lambda (n) (k (add1 n))))))))
+
+  Let's trace: (length '(a b c d))
+
+    (length '(a b c d))
+ => (length-cps '(a b c d) ki)  <== ki: identity continuation
+ => (length-cps '(b c d) (lambda (n)
+                           (ki (add1 n))))
+ => (length-cps '(b c) (lambda (n)
+                         ((lambda (n)
+                            (ki (add1 n)))
+                          (add1 n))))
+ => (length-cps '(c) (lambda (n)
+                       ((lambda (n)
+                          ((lambda (n) (ki (add1 n)))
+                           (add1 n)))
+                        (add1 n))))
+ => (length-cps '() (lambda (n)
+                      ((lambda (n)
+                         ((lambda (n)
+                            ((lambda (n)
+                               (ki (add1 n)))
+                             (add1 n)))
+                          (add1 n)))
+                       (add1 n))))
+ => ((lambda (n)
+       ((lambda (n)
+          ((lambda (n)
+             ((lambda (n)
+                (ki (add1 n)))
+              (add1 n)))
+           (add1 n)))
+        (add1 n)))
+     0)
+ => ((lambda (n)
+       ((lambda (n)
+          ((lambda (n)
+             (ki (add1 n)))
+           (add1 n)))
+        (add1 n)))
+     1)
+ => ((lambda (n)
+       ((lambda (n)
+          (ki (add1 n)))
+        (add1 n)))
+     2)
+ => ((lambda (n)
+       (ki (add1 n)))
+     3)
+ => (ki 4)
+ => ((lambda (_) _) 4)
+ => 4
+
+
+
+
+
+
+;;;; ex: 
+
+(define member?
+  (lambda (a l)
+    (cond
+      ((null? l) #f)
+      (else (or (eq? (car l) a)
+                (member? a (cdr l)))))))
+
+(member? '1 '())
+(member? '1 '(1 a b))
+(member? '1 '(a b 1))
+(member? '1 '(a b c))
+
+=>
+
+(define member?-cps
+  (lambda (a l k)
+    (cond
+      ((null? l) (k #f))
+      (else (member?-cps a (cdr l) (lambda (b) (or (eq? (car l) a) b)))))))
+
+(define member?
+  (lambda (a l)
+    (call/cc
+     (lambda (k)
+       (member?-cps  a l k)))))
+
+(member? '1 '())
+(member? '1 '(1 a b))
+(member? '1 '(a b 1))
+(member? '1 '(a b c))
+
+
+
+;;;; ex:
+
+(define eqlist?
+  (lambda (l1 l2)
+    (cond
+      ((and (null? l1) (null? l2)) #t)
+      ((or (null? l1) (null? l2)) #f)
+      (else
+       (and (equal? (car l1) (car l2))
+            (eqlist? (cdr l1) (cdr l2)))))))
+
+=>
+
+(define eqlist?
+  (lambda (l1 l2)
+    (call/cc
+     (lambda (k)
+       (eqlist?-cps l1 l2 k)))))
+
+(define eqlist?-cps
+  (lambda (l1 l2 k)
+    (cond
+      ((and (null? l1) (null? l2)) (k #t))
+      ((or (null? l1) (null? l2)) (k #f))
+      (else
+       (eqlist?-cps (cdr l1) (cdr l2) (lambda (b) (k (and (equal? (car l1) (car l2))
+                                                          b))))))))
+
+(eqlist? '(s i c) '(s i c))
+(eqlist? '(b ((s))) '(b (s)))
+(eqlist? '(b ((s)) (a (s))) '(c ((s)) (a (s))))
+(eqlist? '(b ((s)) (a (s))) '(b ((s)) (a (s))))
+
+
+
+
+;;;; ex:
+
+(define rember
+  (lambda (a l)
+    (cond
+      ((null? l) '())
+      ((eqv? (car l) a) (rember a (cdr l)))
+      (else (cons (car l) (rember a (cdr l)))))))
+
+=>
+
+(define rember
+  (lambda (a l)
+    (call/cc
+     (lambda (k)
+       (rember-cps a l k)))))
+
+(define rember-cps
+  (lambda (a l k)
+    (cond
+      ((null? l) (k '()))
+      ((eqv? (car l) a) (rember-cps a (cdr l) (lambda (ls) (k ls))))
+      (else (rember-cps a (cdr l) (lambda (ls) (k (cons (car l) ls))))))))
+
+(rember '1 '())
+(rember '1 '(a b c))
+(rember '1 '(1 b c))
+(rember '1 '(a 1 c))
+(rember '1 '(a b 1))
+(rember '1 '(1 a 1 b 1))
+
+
+
+
+;;;; ex:
+
+
+(define rember*
+  (lambda (a l)
+    (cond
+      ((null? l) '())
+      ((pair? (car l) a) (cons (rember* a (car l))    ; <== you can pick either this rember* (1)
+                               (rember* a (cdr l))))  ;     or this rember* (2) when coverting to cps
+      ((eqv? (car l) a) (rember* a (cdr l)))
+      (else (cons (car l) (rember* a (cdr l)))))))
+
+;(rember* 'a '(a b (c a b) (((a b) c) a)))
+
+=>
+
+(define rember*
+  (lambda (a ls)
+    (call/cc
+     (lambda (k)
+       ;(rember*-cps a ls k)))))
+       (rember*-cps2 a ls k)))))
+
+(define rember*-cps
+  (lambda (a l k)
+    (cond
+      ((null? l) (k '()))
+      ((pair? (car l))
+       ;(rember*-cps a (car l) (lambda (ls) (k (cons ls (rember* a (cdr l)))))))
+       (rember*-cps a (car l) (lambda (ls) (rember*-cps a (cdr l) (lambda (als) (k (cons ls als)))))))
+      ((eqv? (car l) a)
+       ;(rember*-cps a (cdr l) (lambda (ls) (k ls))))
+       (rember*-cps a (cdr l) k))
+      (else
+       (rember*-cps a (cdr l) (lambda (ls) (k (cons (car l) ls))))))))
+
+  
+(define rember*-cps2
+  (lambda (a l k)
+    (cond
+      ((null? l) (k '()))
+      ((pair? (car l))
+       ;(rember*-cps2 a (cdr l) (lambda (dls) (k (cons (rember* a (car l)) dls)))) 
+       (rember*-cps2 a (cdr l) (lambda (dls) (rember*-cps2 a (car l) (lambda (als) (k (cons als dls)))))))
+      ;((eqv? (car l) a) (rember*-cps2 a (cdr l) (lambda (ls) (k ls))))
+      ((eqv? (car l) a) (rember*-cps2 a (cdr l) k))
+      (else (rember*-cps2 a (cdr l) (lambda (ls) (k (cons (car l) ls))))))))
+  
+
+  
+;;;; ex:
+
+(define occur*
+  (lambda (a l)
+    (cond
+      ((null? l) 0)
+      ((pair? (car l)) (+ (occur* a (car l))
+                          (occur* a (cdr l))))
+      ((eqv? (car l) a) (add1 (occur* a (cdr l))))
+      (else (occur* a (cdr l))))))
+
+=>
+
+(define occur*
+  (lambda (a l)
+    (call/cc
+     (lambda (k)
+       (occur*-cps a l k)))))
+
+(define occur*-cps
+  (lambda (a l k)
+    (cond
+      ((null? l) (k 0))
+      ;((pair? (car l)) (occur*-cps a (car l) (lambda (n1) (k (+ n1 (occur* a (cdr l)))))))
+      ((pair? (car l))
+       (occur*-cps a (car l)
+                   (lambda (n1) (occur*-cps a (cdr l)
+                                            (lambda (n2) (k (+ n1 n2)))))))
+      ((eqv? (car l) a) (occur*-cps a (cdr l) (lambda (n) (k (add1 n)))))
+      (else (occur*-cps a (cdr l) (lambda (n) (k n)))))))
+       
+
+
+(occur* 'b '((b) s ((((b i))) (c (b) s)) (b) (r) (b d)))
