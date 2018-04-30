@@ -1,0 +1,545 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;                                   ;;;; 
+;;;;            Continuation           ;;;; 
+;;;;                                   ;;;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+ Interpreter
+ - environment
+   - variable bindings
+   - establish data context in which a portion of a program is executed
+   => abstraction of data context
+  
+ - continuation
+   - program execution flow controls
+   - establish control context in which a portion of a prgram is executed
+   => abstraction of control context
+
+
+ Natural recursion vs Iteration
+ - Natural recursion
+   - ex: 
+         (define fact                        
+           (lambda (n)                       
+             (if (zero? n)               
+                 1                           
+                 (*n (fact (sub1 n))))))     
+                                        
+                                        
+                                        
+          Execution                         control context 
+          of (fact n)                         of (fact n)
+ 
+      (fact 4)                            None
+    = (* 4 (fact 3))                      (* 4 _ )
+    = (* 4 (* 3 (fact 2)))                (* 4 (* 3 _ ))
+    = (* 4 (* 3 (* 2 (fact 1))))          (* 4 (* 3 (* 2_ )))
+    = (* 4 (* 3 (* 2 (* 1 (fact 0)))))    (* 4 (* 3 (* 2 (* 1 _ ))))
+    = (* 4 (* 3 (* 2 (* 1 1))))           
+    = (* 4 (* 3 (* 2 1)))                      ^
+    = (* 4 (* 3 2))                            |
+    = (* 4 6)                     Computation that will be executed
+    = 24                          when the value _ returns
+ 
+   : control context grows as the computation proceeds
+     - (fact n) is invoked in larger and larger control contexts
+  
+   This is called "Recursive control behavior"
+   - cause: recursive call is in an operand position
+            -> after evaluating operand, the procedure using 
+               it as operand need to be evaluated
+
+  
+ - Iteration
+   -ex: 
+        (define fact			    
+          (lambda (n)			    
+            (fact-accum n 1)))
+ 
+        (define fact-accum		    
+          (lambda (n accum)		    
+            (if (zero? n)		    
+                accum			    
+                (fact-accum (sub1 n) (* n accum)))))  
+
+  
+                                          control context
+                                              of fact
+
+         (fact 4)			        None
+       = (fact-iter 4 1)			None    
+       = (fact-iter 3 4)			None    
+       = (fact-iter 2 12)		        None
+       = (fact-iter 1 24)		        None
+       = (fact-iter 0 24)		        None
+       = 24                                  
+  
+    : control context does not grow as computation proceeds
+      - in this example, no context at all
+
+    This is called "Iterative control behavior"
+    - cause: recursive call is in an operator position
+             i.e., tail recursion
+
+
+  Summary on
+  Recursive control vs Iterative control behavior
+  
+  - Recursive control behavior
+    - control context grows at each recursive call
+    - control context must be recorded at each recursive call
+    - control context must be retained until the call returns
+    => requires growing amount of memory for control information
+       - Procedural languages
+         - control context on every function call pushed onto stack
+         - stack grows until the computation ends
+ 
+ - Iterative control behavior
+   - each recursive call occurs at the same level
+   - control context does not grow
+   - no additional contral context need to be recorded
+   => requires only a bounded amount of memory for control context
+  
+
+ We want to
+ Track and manipulate control contexts
+ - why
+   - efficiency: iterative control (tail calls) than natural recursion
+   - exit with a result from within a deep recursion
+   - error control: abandon the control contexts when error occus
+   - error recovery: in C++/Java : try/catch/finally/throw
+   - etc (break, coroutines, ...)
+  
+ - how
+   - Continuation (abstraction of control context) 
+   
+
+
+ 
+ Continuation
+ 
+ - a context that has been made into an escape procedure
+     ^^^^^^^                            ^^^^^^^^^^^^^^^^
+ so, let's look at
+ 1. context,
+ 2. escape proceudre, and then
+ 3. continuation
+ 
+
+ 1. Contexts
+ - A procedure of one argument (call it _)
+ - Terminology
+       Given a subexpression e of E, 
+       the procedure c is a context of e in E
+    means
+       value of c applied to e = value of E
+
+ - ex1
+      Expression E:    (+ 3 (* 4 (+ 5 6)))
+      Subexpression e: (+ 5 6)
+      ===> control context of (+ 5 6): (+ 3 (* 4 _ ))
+ 
+      Context c    : (lambda ( _ )
+                       (+ 3 (* 4 _ )))
+
+      c applied to e:
+           ( (lambda ( _ ) (+ 3 (* 4 _ )))
+             (+ 5 6) )
+            => 47
+
+      value of E:
+           (+ 3 (* 4 (+ 5 6)))
+           => 47
+
+      So, value of c applied to e = value of E
+
+ - ex2
+      Expression E:    (* (+ (* 3 4) 5) 2)
+      Subexpression e: (* 3 4)
+      ===> control context of (* 3 4): (* (+ _ 5) 2)
+ 
+      Context c     : (lambda ( _ )
+                        (* (+ _ 5) 2))
+
+      c applied to e:
+           ( (lambda ( _ ) (* (+ _ 5) 2))
+             (* 3 4) )
+            => 34
+
+      value of E:
+           (* (+ (* 3 4) 5) 2)
+           => 34
+
+      So again, value of c applied to e = Value of E
+
+      In addition, Context c can be applied to any value
+           ( (lambda ( _ ) (* (+ _ 5) 2))
+             3 )
+            => 16
+
+ - ex3: context of (* 3 4) in
+        (if (zero? 5)             <= false: so only 'else' part
+            (+ 3 (* 4 (+ 5 6)))
+            (* (+ (* 3 4) 5 2)))
+        =>
+        (lambda ( _ )
+          (* (+ _ 5) 2)
+
+ - ex4: context of (* 3 4) in
+        (let ((n 1))
+          (if (zero? n)           <= true: so only 'then' part
+              (writeln (+ 3 (* 4 (+ 5 6))))
+              (writeln (* (+ (* 3 4) 5) 2)))
+          n)
+        ==>
+        (lambda ( _ )
+          (writeln (* (+ _ 5) 2))
+          n) 
+ 
+ - ex5: Given
+        (define foo
+          (lambda (n)
+            (if (zero? n)
+                (writeln (+ 3 (* 4 (+ 5 6))))
+                (writeln (* (+ (* 3 4) 5) 2)))
+            n))
+        
+        What is the context of (* 3 4) in (* 10 (foo 1))?
+        =>
+            (lambda ( _ )
+              (* 10 (begin
+                      (writeln (* (+ _ 5) 2))
+                      n))
+
+ - ex6: What is the context of (* 3 4) in 
+        (begin
+          (writeln 0)   ;; <-- can be executed before (* 3 4)
+          (let ((n 1))
+            (if (zero? n)
+                (writeln (+ 3 (* 4 (+ 5 6))))
+                (writeln (* (+ (* 3 4) 5) 2)))
+            n))
+        =>
+            (lambda ( _ )
+              (begin
+                (writeln (* (+ _ 5) 2))
+                n))
+
+ - ex7: What is the context of (* 3 4) in
+        (begin
+          (writeln 0)    ;; <-- can be executed before (* 3 4)
+          (let ((n 1))
+            (if (zero? n)
+                (writeln (+ 3 (* 4 (+ 5 6))))
+                (writeln (* (+ (* 3 4) 5) 2)))
+            (set! n (+ n 2))  ;; <-- cannot be executed before (* 3 4)
+            n))
+        =>
+            (lambda ( _ )
+              (begin
+                (writeln (* (+ _ 5) 2))
+                (set! n (+ n 2))
+                n))
+
+ - ex8: Given the definition of map-add below
+        (define map-add1
+          (lambda (ls)
+            (if (null? ls)
+                (cons (+ 3 (* 4 5)) '())
+                (let ((val (add1 (car ls))))
+                  (cons val (map-add1 (cdr ls)))))))
+        
+        what is the context of (* 4 5) in (cons 0 (map-add1 '(1 3 5)))
+        =>
+          Note that subexpression (* 4 5) occurs
+          only when base case is hit, that is,
+            (cons 0 (map-add1 '(1 3 5)))
+         -> (cons 0 (cons 2 (map-add1 '(3 5))))
+         -> (cons 0 (cons 2 (cons 4 (map-add1 '(5)))))
+         -> (cons 0 (cons 2 (cons 4 (cons 6 (map-add1 '())))))
+         -> (cons 0 (cons 2 (cons 4 (cons 6 (cons (+ 3 _ ) '() )))))
+         so,
+            (lambda ( _ )
+              (cons 0 (cons 2 (cons 4 (cons 6 (cons (+ 3 _ ) '()))))))
+
+
+  - ex9: What is the context of (* 3 4) in
+         (if (zero? (* 3 4))
+             8
+             9)
+ 
+         =>
+             (lambda ( _ )
+               (if (zero? _)
+                   8
+                   9))
+ 
+
+
+
+ 2. Escape Procedure
+
+ - When invoked, yields a value but never passed the value to others
+    - so, control contexs waiting for the value is ignored
+    - so, when invoked, the value is the value of entire computation
+ 
+ - Behavior of escape procedure
+   - Given  e: escape procedure
+            f: any procedure
+            expr: any expression
+ 
+              ((compose f e) expr) = (f (e expr)
+ 
+     so, context of (e expr) is
+              (lambda ( _ ) (f _ )) = f
+
+     therefore, ignoring the context
+              (f (e expr) = (e expr)
+ 
+ 
+
+ - ex: error
+              (define dividend 10)
+              (cons (if (zero? divisor)
+                        (error 'divided-by-zero")
+                        (/ dividend divisor))
+                    '(a b c))
+ 
+        with  (define divisor 2)
+              => '(5 a b c)
+        with  (define divisor 0)
+              => divided-by-zero, not '(divided-by-zero a b c)
+ 
+    => it shows "error" is not a conventional procedure
+        - when error is invoked, no consing occurs
+        - ie, error escaped from (or ignored) the context
+
+ - How to create escape procedures
+   - Let's assume the procedure 'escaper'
+     that takes any procedure as an argument and
+          returns an escape procedure for the argument procedure
+   - ex:
+        > (+ (* 5 2) 3)
+        13
+        > (+ ((escaper *) 5 2) 3)
+        10
+        > (+ ((lambda (x)
+                (- (* x 3) 7))
+              5)
+             4)
+        12
+        > (+ ((escaper (lambda (x)
+                         (- (* x 3) 7)))
+               5)
+             4)
+        8
+        > (+ ((escaper (lambda (x)
+                         ((escaper -) (* x 3) 7)))
+              5)
+             4)
+        8
+        > (+ ((escaper (lambda (x)
+                         ((escaper -) ((escaper *) x 3) 7)))
+              5)
+             4)
+        15
+
+
+
+ 
+ 3. Continuation
+
+ - Racall the definition of continuation
+   : a context that has been made into an escape procedure
+
+ - ex:
+      We know that the context of (+ 5 6) in (+ 3 (* 4 (+ 5 6)))
+      is 
+             (lambda ( _ )
+               (+ 3 (* 4 _ )))
+
+      So, the continuation of (+ 5 6) in (+ 3 (* 4 (+ 5 6)))
+      is simply the context above made inot escape procedure, i.e.,
+             (escaper (lambda ( _ )
+                        (+ 3 (* 4 _ ))))
+
+ - Can we actually define "escaper" procedure to get continuation?
+   - Yes, but we will not do it in this class.
+   - Instead, we will simply use scheme's built-in procedure "call/cc"
+        to automatically obtain the continuation of a subexpression
+
+
+ Now, scheme's built-in procedure to obtain the continuation:
+
+ call/cc (call-with-current-continuation)
+ - a procedure taking one argument, called 'receiver'
+ - receiver (the argument to call/cc) is
+     also a procedure taking one argument, called 'continuation'
+ - continuation (the argument to receiver) is
+     also a procedure of one argument
+ - continuation is built by call/cc
+
+ => so, call/cc works as follows:
+      1. take an argument (receiver)
+      2. builds the continuation of the subexpression (call/cc receiver)
+         in the whole expression
+      3. invokes the receiver passing the continuation
+      4. the result of the receiver is the result of the whole expression
+
+ - Let's see how call/cc works step by step:
+
+   Given expression:  (+ 3 (* 4 (call/cc receiver)))
+
+   1. call/cc takes receiver as an argument
+      - receiver must be a procedure of one argument
+   2. call/cc builds the continuation around itself
+      - find the context of subexpression (call/cc receiver):
+                 (lambda ( _ )
+                   (+ 3 (* 4 _)))
+      - make the context into an escape procedure
+                 (escaper (lambda ( _ ) (+ 3 (* 4 _ ))))
+ 
+   3. call/cc invokes the receiver passing the continuation         
+      - i.e., 
+         (call/cc receiver) ==> (receiver continuation)
+
+   4. the result of the receiver is the result of the whole expression
+      since call/cc is an escape procedure
+      - i.e.,
+           (+ 3 (* 4 (call/cc receiver)))
+        =  (call/cc receiver)      ;;<= call/cc is an escape procedure
+        =  (receiver continuation) ;;<= see 3 above
+
+  - ex:
+        (+ 3 (* 4 (call/cc receiver)))
+      = (+ 3 (* 4 (receiver (escaper (lambda ( _ ) (+ 3 (* 4 _ )))))))
+
+
+      if receiver is defined as
+          (lambda (k) 6) ;; <== does not use continuation k
+      then,
+        (+ 3 (* 4 (call/cc receiver)))
+      = (+ 3 (* 4 (receiver (escaper (lambda ( _ ) (+ 3 (* 4 _ )))))))
+      = (+ 3 (* 4 ((lambda (k) 6)
+                   (escaper (lambda ( _ ) (+ 3 (* 4 _ )))))))
+      = (+ 3 (* 4 ((escaper (lambda ( _ ) (+ 3 (* 4 _ )))) 6)))
+      = ((escaper (lambda ( _ ) (+ 3 (* 4 _ )))) 6)
+      = (+ 3 (* 4 6))
+      = 27
+
+ 
+      if receiver is defined as
+          (lambda (k) (k 6)) ;; <== uses continuation k
+      then,
+        (+ 3 (* 4 (call/cc receiver)))
+      = (+ 3 (* 4 (receiver (escaper (lambda ( _ ) (+ 3 (* 4 _ )))))))
+      = (+ 3 (* 4 ((lambda (k) (k 6))
+                   (escaper (lambda ( _ ) (+ 3 (* 4 _ )))))))
+      = (+ 3 (* 4 ((escaper (lambda ( _ ) (+ 3 (* 4 _ ))))
+                   6)
+      = ((escaper (lambda ( _ ) (+ 3 (* 4 _ ))))
+         6)
+      = (+ 3 (* 4 6))
+      = 27
+
+
+      Is this any different?
+ 
+      if receiver is defined as
+          (lambda (k) (+ 2 (k 6))) ;; <== uses continuation k
+      then,
+        (+ 3 (* 4 (call/cc receiver)))
+      = (+ 3 (* 4 (receiver (escaper (lambda ( _ ) (+ 3 (* 4 _ )))))))
+      = (+ 3 (* 4 ((lambda (k) (+ 2 (k 6)))
+                   (escaper (lambda ( _ ) (+ 3 (* 4 _ )))))))
+      = (+ 3 (* 4 (+ 2 ((escaper (lambda ( _ ) (+ 3 (* 4 _ ))))
+                        6))))
+      = ((escaper (lambda ( _ ) (+ 3 (* 4 _ ))))
+         6)
+      = (+ 3 (* 4 6))
+      = 27
+
+
+
+ In summary
+ - Continuation
+   - a context made into an escape procedure
+   - created by call/cc (call-with-current-continuation)
+
+ - call/cc
+   - takes a procedure of one argument 
+   - creates a continuation as an escape procedure
+   - call the argument procedure passing the continuation
+   - that is,
+              (call/cc r) = (r <e-p>)
+                               ^^^^^
+                               escape-procedure
+                               (ie, continuation)
+ - ex:
+      (call/cc (lambda (k) (+ 5 (k 3))))  <-- context: (lambda (_) _)
+   => ((lambda (k) (+ 5 (k 3))) <e-p>)    <-- <e-p> is continuation
+                                               (escaper (lambda (_) _))
+   => (+ 5 (<e-p> 3))
+   => (<e-p> 3)
+   => ((lambda (_) _) 3)
+   => 3
+
+ - ex:
+      (f (add1 (call/cc (lambda (k) (+ 5 (k 3))))))
+                  <-- contex: (lambda (_) (f (add1 _)))
+   => (f (add1 ((lambda (k) (+ 5 (k 3))) <e-p> )
+                  <-- <e-p>: (escaper (lambda (_) (f (add1 _))))
+   => (f (add1 (+ 5 (<e-p> 3))))
+   => (<e-p> 3)
+   => (f (add1 3))
+   => (f 4)
+
+ - ex:
+      (cons (call/cc (lambda (k) (+ 5 6))) '(a b c))  <-- k not used
+             <-- context: (lambda (_) (cons _ '(a b c)))
+   => (cons ((lambda (k) (+ 5 6)) <e-p>) '(a b c))
+             <-- <e-p>: (escaper (lambda (_) (cons _ '(a b c))))
+   => (<e-p> (+ 5 6))
+   => (cons 11 '(a b c))
+   => '(11 a b c)
+
+ - ex:
+      (define cont '*)
+      (define map*
+        (lambda (f l)
+          (cond
+            ((null? l) (call/cc (lambda (k)
+                                  (set! cont k)
+                                  '())))
+            (else (cons (f (car l))
+                        (map* f (cdr l)))))))
+      (map* add1 '(1 2))
+   => (cons (add1 1) (map* f '(2)))
+   => (cons (add1 1) (cons (add1 2) (map* f '())))
+   => (cons 2 (cons 3 (call/cc (lambda (k)
+                                 (set! cont k)
+                                 '()))))
+                      <-- context: (lambda (_) (cons 2 (cons 3 _)))
+   => (cons 2 (cons 3 ((lambda (k)
+                         (set! cont k)
+                         '())
+                       <e-p>)))
+                <--  <e-p>: (escaper (lambda (_) (cons 2 (cons 3 _))))
+   => (cons 2 (cons 3 (begin
+                        (set! cont <e-p>)  <== cont is set to <e-p>
+                        '())))
+   => (cons 2 (cons 3 '()))
+   => '(2 3)
+
+      (cont '(11 12 13))
+   => (<e-p> '(11 12 13))
+   => ((escaper (lambda (_) (cons 2 (cons 3 _)))) '(11 12 13))
+   => '(2 3 11 12 13)
+
+      (cons 'a (cons 'b (cont '(11 12 13))))
+   => (cons 'a (cons 'b (<e-p> '(11 12 13))
+   => (<e-p> '(11 12 13))
+   => ((escaper (lambda (_) (cons 2 (cons 3 _)))) '(11 12 13))
+   => '(2 3 11 12 13)
+
